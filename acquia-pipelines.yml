@@ -1,27 +1,9 @@
 version: 1.0.0
-variables:
-  global:
-    N3_KEY: 'your key'
-    N3_SECRET:
-      secure: 2acb6uBB/7Zo/zUOwqsKqWyRL/43PYcWugmz68JFmHtzUFK1jsh0tYQtsZ59H/7wRYucTqoXouk2FDIHT8rcsp1d5i67ZJXz10qyaP/zXCXhmzFJ2BUuXoLXMwQ/lDVjr6GoveOt+Frbc6Ol20sMtHXOSFYf1DfJ29/Ufk+KR8Pn7ZfYtb6zDW0g8R0C20Ooqjwu7r/Z/xnwisr2BlOU8GRrTUU5fpCF3dj1lQ/8X2axJiUETyKnAg6ll2r1HqBHXabPAG0JTMhXomOkpXboYchI+wu0JzieN+r1+BptyRHfIOFT/Yqo3LESQyJL663vNM9YFSJiaQjNdLPMGgx/KSi7oz3Hrk0VEdk20YBmE5Ckr+OoCck6BCbWI/PfBBDrNxM7u6SnKxp8Uqnvd4v/dT9fxAx0BRzQ47CM9y81JvHXcfr61nekOPyhDRMl4NWMu0GYeVOMLeKV7WdIIO8rtvDwsCADICpDghQIAxjEbdXYSKG8AkfXNrRcGNJ6k6ML9FJhzOLmoxT+LyEWH58fisp1kNfutGtXAenK6PRRkNn7yufqoZEcDwnF3UaFopXbFQaaO7/a04HBAiMy7u7wp1GUzKHIsp8JwKjcVUvxZfQ1T9Sn+JWThEQ6xCwGPlLR+MUov1DBpZoFxUGe0xE47ya3p51c4VdMAdBlslgz2XM8G4=k5sq4SLOcM4bViKfXAorpLEgVDs7TJ4V7xJ4ntvz3bgUNTVqBQ+s7h1qySNhymuRyyOxyMStHaENg4zJqWGfkqAFGJXvwhofT2AkHMx8TB7DatFVC1nNvYsKFLN2SOBZD723fFn1djtCpQSTsluyAdb5S9h/TT8adx5VOb6BFj8=
 events:
   build:
     steps:
-      -
-        build_site:
+      - hello:
+          type: script
           script:
-            - 'echo "Put your build instructions here."'
-      -
-        deploy:
-          script:
-            - 'cd environments'
-            - 'composer install'
-            - 'php cloud-ode.php'
-  merge:
-    steps:
-      -
-        deploy:
-          script:
-            - 'cd environments'
-            - 'composer install'
-            - 'php cloud-ode.php'
+            - mkdir docroot
+            - echo "Hello, Pipelines!" > docroot/hello.txt

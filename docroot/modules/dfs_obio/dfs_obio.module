@@ -1,0 +1,124 @@
+<?php
+
+/**
+ * @file
+ * Contains dfs_obio.module.
+ */
+
+use Drupal\Core\Menu\MenuTreeParameters;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_scenario_import().
+ */
+fnction dfs_obio_scenario_import() {
+  $migrations = [];
+  $migrations['dfs_obio'] = [
+    'import_dfs_obio_file',
+    'import_file_demo_user_pictures',
+    'import_user_demo_users',
+    'import_dfs_obio_user',
+    'import_dfs_obio_image',
+    'import_dfs_obio_tags',
+    'import_dfs_obio_hero',
+    'import_dfs_obio_basic',
+    'import_dfs_obio_media_block',
+    'import_dfs_obio_landing_page',
+    'import_dfs_obio_article',
+    'import_dfs_obio_location',
+    'import_dfs_obio_product',
+    'import_dfs_obio_review',
+    'import_dfs_obio_gallery_image',
+  ];
+  return (array) $migrations;
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function dfs_obio_module_implements_alter(&$implementations, $hook) {
+  // Ensure dynamic migrations get set in the right order.
+  if ($hook == 'migration_plugins_alter') {
+    $preferred_order = [
+      'import',
+      'df_tools_user',
+      'df_tools_blocks',
+      'df_tools_slideshow',
+      'df_tools_migration',
+      'dfs_obio',
+    ];
+    foreach ($preferred_order as $module) {
+      if (isset($implementations[$module])) {
+        unset($implementations[$module]);
+        $implementations[$module] = $module;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_migration_plugins_alter().
+ */
+function dfs_obio_migration_plugins_alter(&$definitions) {
+  // Update source references in scenario migrations.
+  $import = dfs_obio_scenario_import();
+  foreach ($import['dfs_obio'] as $id) {
+    $source = &$definitions[$id]['source'];
+    $source['path'] = str_replace('..', dirname(__FILE__), $source['path']);
+    if (isset($source['constants']) && isset($source['constants']['source_base_path'])) {
+      $source['constants']['source_base_path'] = str_replace('..', dirname(__FILE__), $source['constants']['source_base_path']);
+    }
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function dfs_obio_mail($key, &$message, $params) {
+  // Check if this is an email type we can handle
+  if ($key == 'sign-up') {
+    // Use HTML formatting for this email so we can use utm_* parameters
+    $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+
+    $site_name = \Drupal::configFactory()->get('system.site')->get('name');
+
+    // Format the subject.
+    $message['subject'] = t('@site newsletter confirmation', ['@site' => $site_name]);
+
+    $query_options = [
+      'utm_source' => 'subscription',
+      'utm_medium' => 'email',
+    ];
+
+    $parameters = new MenuTreeParameters();
+    $parameters->setTopLevelOnly();
+    $header_links = [];
+    $menu = \Drupal::menuTree()->load('main', $parameters);
+    foreach ($menu as $id => $tree) {
+      if ($id !== 'dfs_obio.secondary_menu') {
+        $url = $tree->link->getUrlObject();
+        $url->setOption('query', $query_options);
+        $header_links[] = [
+          'url' => $url->setAbsolute(TRUE)->toString(),
+          'title' => $tree->link->getTitle(),
+        ];
+      }
+    }
+
+    $url = new Url('<front>');
+    $url->setOption('query', $query_options);
+
+    // Render the body.
+    $build = [
+      '#type' => 'inline_template',
+      '#template' => file_get_contents(__DIR__ . '/templates/newsletter.html.twig'),
+      '#context' => [
+        'site' => $site_name,
+        'logo_url' => $GLOBALS['base_url'] . '/' . theme_get_setting('logo.url'),
+        'url' => $url->setAbsolute(TRUE)->toString(),
+        'header_links' => $header_links,
+      ],
+    ];
+    $message['body'][] = render($build);
+  }
+}

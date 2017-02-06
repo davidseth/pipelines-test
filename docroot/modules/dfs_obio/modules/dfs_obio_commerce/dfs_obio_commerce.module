@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * Commerce integration and configuration.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_block_view_BASE_BLOCK_ID_alter().
+ */
+function dfs_obio_commerce_block_view_commerce_cart_alter(array &$build, \Drupal\Core\Block\BlockPluginInterface $block) {
+  // Add a #pre_render callback to modify the cart build information before it
+  // is rendered.
+  $build['#pre_render'][] = 'dfs_obio_commerce_cart_pre_render';
+}
+
+/**
+ * #pre_render callback: Alters the presentation of the Commerce cart block.
+ */
+function dfs_obio_commerce_cart_pre_render(array $build) {
+  $count = $build['content']['#count'];
+
+  // Change the empty cart text from 'Count 0' to 'Cart'.
+  if ($count == 0) {
+    $build['content']['#count_text'] = t('Cart');
+  }
+
+  // Replace the default cart icon with the ion equivalent.
+  $build['content']['#icon'] = [
+    '#markup' => '<span class="meta-icon-size"><i class="icon ion-ios-cart"></i></span>',
+  ];
+
+  return $build;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function dfs_obio_commerce_form_alter(&$form, FormStateInterface $form_state) {
+  if (isset($form['#id']) && preg_match('/commerce-order-item.*add-to-cart.*form/', $form['#id'])) {
+    $form['purchased_entity']['widget']['#after_build'][] = '_dfs_obio_commerce_process_add_to_cart_form';
+  }
+}
+
+/**
+ * Process callback for the commerce "add to cart" form.
+ */
+function _dfs_obio_commerce_process_add_to_cart_form($element) {
+  $element[0]['#prefix'] = '<div class="add-to-cart-form row">';
+  $element[0]['#suffix'] = '</div>';
+  $element[0]['attributes']['attribute_ambiance_package']['#attributes']['class'][] = 'large-6';
+  $element[0]['attributes']['attribute_ambiance_package']['#attributes']['class'][] = 'columns';
+  $element[0]['attributes']['attribute_room_size']['#attributes']['class'][] = 'large-6';
+  $element[0]['attributes']['attribute_room_size']['#attributes']['class'][] = 'columns';
+  return $element;
+}

@@ -1,0 +1,61 @@
+uuid: 3924409d-13f6-4322-8664-01b69f42c804
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.hero
+    - core.entity_view_mode.block_content.card
+    - field.field.block_content.hero.field_first_line
+    - field.field.block_content.hero.field_hero_image
+    - field.field.block_content.hero.field_hero_link
+    - field.field.block_content.hero.field_icon
+    - field.field.block_content.hero.field_nested_block
+    - field.field.block_content.hero.field_second_line
+    - responsive_image.styles.card_default
+  module:
+    - link
+    - responsive_image
+_core:
+  default_config_hash: KwZKHfM7Ixui_187qEJvrlRPW_LMvGch5orlPGTe4S0
+id: block_content.hero.card
+targetEntityType: block_content
+bundle: hero
+mode: card
+content:
+  field_first_line:
+    type: string
+    weight: 1
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    label: hidden
+  field_hero_image:
+    type: responsive_image
+    weight: 0
+    settings:
+      responsive_image_style: card_default
+      image_link: ''
+    third_party_settings: {  }
+    label: hidden
+  field_hero_link:
+    type: link
+    weight: 3
+    settings:
+      trim_length: 80
+      rel: ''
+      target: ''
+      url_only: false
+      url_plain: false
+    third_party_settings: {  }
+    label: hidden
+  field_second_line:
+    type: string
+    weight: 2
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    label: hidden
+hidden:
+  field_icon: true
+  field_nested_block: true
+  langcode: true

@@ -1,0 +1,78 @@
+dfs_obio.shop_office:
+  title: 'Shop Office'
+  url: 'internal:/shop/office'
+  menu_name: main
+  weight: 0
+  expanded: TRUE
+dfs_obio.about:
+  title: 'About'
+  url: 'internal:/about'
+  menu_name: main
+  weight: 1
+  expanded: TRUE
+dfs_obio.inspiration:
+  title: 'Inspiration'
+  url: 'internal:/inspiration'
+  menu_name: main
+  weight: 2
+  expanded: TRUE
+dfs_obio.locations:
+  title: 'Locations'
+  url: 'internal:/locations'
+  menu_name: main
+  weight: 3
+  expanded: TRUE
+# These links are only visible on mobile devices.
+dfs_obio.secondary_menu:
+  title: 'Secondary Menu'
+  url: 'internal:/null'
+  menu_name: main
+  weight: 4
+  expanded: TRUE
+dfs_obio.my_account:
+  title: 'My Account'
+  url: 'internal:/user'
+  menu_name: main
+  parent: dfs_obio.secondary_menu
+  weight: 1
+  expanded: TRUE
+dfs_obio.cart:
+  title: 'Cart'
+  url: 'internal:/cart'
+  menu_name: main
+  parent: dfs_obio.secondary_menu
+  weight: 2
+  expanded: TRUE
+
+dfs_obio.shop_office_footer:
+  title: 'Shop Office'
+  url: 'internal:/shop/office'
+  menu_name: footer
+  weight: 1
+  expanded: TRUE
+dfs_obio.about_footer:
+  title: 'About'
+  url: 'internal:/about'
+  menu_name: footer
+  weight: 2
+  expanded: TRUE
+dfs_obio.inspiration_footer:
+  title: 'Inspiration'
+  url: 'internal:/inspiration'
+  menu_name: footer
+  weight: 3
+  expanded: TRUE
+dfs_obio.locations_footer:
+  title: 'locations'
+  url: 'internal:/locations'
+  menu_name: footer
+  weight: 4
+  expanded: TRUE
+dfs_obio.my_acount_footer:
+  title: 'My Account'
+  url: 'internal:/user'
+  menu_name: footer
+  weight: 5
+  expanded: TRUE
+dfs_obio.nodes:
+  deriver: \Drupal\dfs_obio_menu\Plugin\Derivative\DFSOBIOMenuLinkDerivative

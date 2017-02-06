@@ -1,0 +1,240 @@
+<?php
+
+use Drupal\commerce_price\Price;
+use Drupal\commerce_product\Entity\Product;
+use Drupal\commerce_product\Entity\ProductAttribute;
+use Drupal\commerce_product\Entity\ProductAttributeValue;
+use Drupal\commerce_product\Entity\ProductType;
+use Drupal\commerce_product\Entity\ProductVariation;
+use Drupal\commerce_product\Entity\ProductVariationType;
+use Drupal\commerce_store\Entity\Store;
+
+/**
+ * @file
+ * Install, update and uninstall functions for the dfs_obio_commerce module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dfs_obio_commerce_install() {
+  // If needed, this will import the currency.
+  $currency_importer = \Drupal::service('commerce_price.currency_importer');
+  $currency_importer->import('USD');
+
+  // Create the OBIO store content entity.
+  $store = Store::create([
+    'type' => 'online',
+    'uid' => 1,
+    'name' => 'OBIO',
+    'mail' => \Drupal::currentUser()->getEmail(),
+    'address' => [
+      'country_code' => 'US',
+      'address_line1' => '53 State Street',
+      'locality' => 'Boston',
+      'administrative_area' => 'MA',
+      'postal_code' => '02109',
+    ],
+    'default_currency' => 'USD',
+    'billing_countries' => [
+      'US',
+    ],
+  ]);
+  $store->save();
+
+  /** @var \Drupal\commerce_store\StoreStorage $store_storage */
+  $store_storage = \Drupal::service('entity_type.manager')->getStorage('commerce_store');
+  $store_storage->markAsDefault($store);
+
+  // Create a 'room' variation type.
+  $variation_type = ProductVariationType::create([
+    'status' => 1,
+    'id' => 'room',
+    'label' => 'Room',
+    'orderItemType' => 'default',
+    'generateTitle' => FALSE,
+  ]);
+  $variation_type->save();
+
+  // Create an 'ambiance package' attribute.
+  $ambiance_package_attribute = ProductAttribute::create([
+    'id' => 'ambiance_package',
+    'label' => 'Ambiance package',
+    'elementType' => 'radios',
+  ]);
+  $ambiance_package_attribute->save();
+
+  // Create a 'room size' attribute.
+  $room_size_attribute = ProductAttribute::create([
+    'id' => 'room_size',
+    'label' => 'Room size',
+    'elementType' => 'radios',
+  ]);
+  $room_size_attribute->save();
+
+  // Add attribute fields to the variation type.
+  $fieldManager = \Drupal::service('commerce_product.attribute_field_manager');
+  $fieldManager->createField($ambiance_package_attribute, $variation_type->id());
+  $fieldManager->createField($room_size_attribute, $variation_type->id());
+
+  // Create the 'room size' attribute values.
+  $room_small = ProductAttributeValue::create([
+    'attribute' => 'room_size', // The attribute we are referencing.
+    'name' => 'Small Room, 10 - 100 square feet', // Name of the actual value.
+  ]);
+  $room_small->save();
+  $room_medium = ProductAttributeValue::create([
+    'attribute' => 'room_size', // The attribute we are referencing.
+    'name' => 'Medium Room, 100 - 500 square feet', // Name of the actual value.
+  ]);
+  $room_medium->save();
+  $room_large = ProductAttributeValue::create([
+    'attribute' => 'room_size', // The attribute we are referencing.
+    'name' => 'Large Room, 500 - 1000+ square feet', // Name of the actual value.
+  ]);
+  $room_large->save();
+
+  // Create the 'ambiance package' attribute values.
+  $ambiance_silver = ProductAttributeValue::create([
+    'attribute' => 'ambiance_package', // The attribute we are referencing.
+    'name' => 'Silver Ambiance, Decor refresh every two years', // Name of the actual value.
+  ]);
+  $ambiance_silver->save();
+  $ambiance_gold = ProductAttributeValue::create([
+    'attribute' => 'ambiance_package', // The attribute we are referencing.
+    'name' => 'Gold Ambiance, Decor refresh every year', // Name of the actual value.
+  ]);
+  $ambiance_gold->save();
+  $ambiance_platinum = ProductAttributeValue::create([
+    'attribute' => 'ambiance_package', // The attribute we are referencing.
+    'name' => 'Platinum Ambiance, Decor refresh every six months', // Name of the actual value.
+  ]);
+  $ambiance_platinum->save();
+
+  // Create variations for all combinations of room size and ambiance package.
+  $variation1 = ProductVariation::create([
+    'type' => 'room',
+    'sku' => 'SR10-SA',
+    'status' => 1,
+    'title' => 'Small Room, Silver Ambiance',
+    'price' => new Price('10.00', 'USD'),
+    'attribute_room_size' => $room_small,
+    'attribute_ambiance_package' => $ambiance_silver,
+  ]);
+  $variation1->save();
+
+  $variation2 = ProductVariation::create([
+    'type' => 'room',
+    'sku' => 'SR10-GA',
+    'title' => 'Small Room, Gold Ambiance',
+    'status' => 1,
+    'price' => new Price('20.00', 'USD'),
+    'attribute_room_size' => $room_small,
+    'attribute_ambiance_package' => $ambiance_gold,
+  ]);
+  $variation2->save();
+
+  $variation3 = ProductVariation::create([
+    'type' => 'room',
+    'sku' => 'SR10-PA',
+    'title' => 'Small Room, Platinum Ambiance',
+    'status' => 1,
+    'price' => new Price('30.00', 'USD'),
+    'attribute_room_size' => $room_small,
+    'attribute_ambiance_package' => $ambiance_platinum,
+  ]);
+  $variation3->save();
+
+  $variation4 = ProductVariation::create([
+    'type' => 'room',
+    'sku' => 'MR100-SA',
+    'title' => 'Medium Room, Silver Ambiance',
+    'status' => 1,
+    'price' => new Price('100.00', 'USD'),
+    'attribute_room_size' => $room_medium,
+    'attribute_ambiance_package' => $ambiance_silver,
+  ]);
+  $variation4->save();
+
+  $variation5 = ProductVariation::create([
+    'type' => 'room',
+    'sku' => 'MR100-GA',
+    'title' => 'Medium Room, Gold Ambiance',
+    'status' => 1,
+    'price' => new Price('200.00', 'USD'),
+    'attribute_room_size' => $room_medium,
+    'attribute_ambiance_package' => $ambiance_gold,
+  ]);
+  $variation5->save();
+
+  $variation6 = ProductVariation::create([
+    'type' => 'room',
+    'sku' => 'MR100-PA',
+    'title' => 'Medium Room, Platinum Ambiance',
+    'status' => 1,
+    'price' => new Price('300.00', 'USD'),
+    'attribute_room_size' => $room_medium,
+    'attribute_ambiance_package' => $ambiance_platinum,
+  ]);
+  $variation6->save();
+
+  $variation7 = ProductVariation::create([
+    'type' => 'room',
+    'sku' => 'LR500-SA',
+    'title' => 'Large Room, Silver Ambiance',
+    'status' => 1,
+    'price' => new Price('500.00', 'USD'),
+    'attribute_room_size' => $room_large,
+    'attribute_ambiance_package' => $ambiance_silver,
+  ]);
+  $variation7->save();
+
+  $variation8 = ProductVariation::create([
+    'type' => 'room',
+    'sku' => 'LR500-GA',
+    'title' => 'Large Room, Gold Ambiance',
+    'status' => 1,
+    'price' => new Price('1000.00', 'USD'),
+    'attribute_room_size' => $room_large,
+    'attribute_ambiance_package' => $ambiance_gold,
+  ]);
+  $variation8->save();
+
+  $variation9 = ProductVariation::create([
+    'type' => 'room',
+    'sku' => 'LR500-PA',
+    'title' => 'Large Room, Platinum Ambiance',
+    'status' => 1,
+    'price' => new Price('1500.00', 'USD'),
+    'attribute_room_size' => $room_large,
+    'attribute_ambiance_package' => $ambiance_platinum,
+  ]);
+  $variation9->save();
+
+  // Create a new 'collection' product type.
+  $productType = ProductType::create([
+    'id' => 'collection',
+    'label' => 'Collection',
+    'status' => 1,
+    'description' => '',
+    'variationType' => 'room',
+    'injectVariationFields' => TRUE,
+  ]);
+  $productType->save();
+
+  // Add required fields to the 'collection' product type.
+  commerce_product_add_variations_field($productType);
+  commerce_product_add_stores_field($productType);
+  commerce_product_add_body_field($productType);
+
+  // Create the 'room' product content entity.
+  $product = Product::create([
+    'uuid' => '5da44ac4-a762-4f5e-bd88-60aeed3a133e',
+    'uid' => 1,
+    'type' => 'collection',
+    'title' => 'Room',
+    'stores' => [$store],
+    'variations' => [$variation1, $variation2, $variation3, $variation4, $variation5, $variation6, $variation7, $variation8, $variation9],
+  ]);
+  $product->save();
+}

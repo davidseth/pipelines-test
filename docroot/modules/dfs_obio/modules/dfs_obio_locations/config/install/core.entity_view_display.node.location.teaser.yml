@@ -1,0 +1,54 @@
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.location.body
+    - field.field.node.location.field_location_address
+    - field.field.node.location.field_location_geofield
+    - field.field.node.location.field_location_hours
+    - field.field.node.location.field_location_media
+    - image.style.large
+    - node.type.location
+  module:
+    - address
+    - media_entity
+    - panelizer
+    - text
+    - user
+third_party_settings:
+  panelizer:
+    enable: false
+    custom: false
+    allow: false
+    default: default
+id: node.location.teaser
+targetEntityType: node
+bundle: location
+mode: teaser
+content:
+  field_location_address:
+    type: address_default
+    weight: 1
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+  field_location_hours:
+    type: text_default
+    weight: 2
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_location_media:
+    type: media_thumbnail
+    weight: 0
+    label: hidden
+    settings:
+      image_style: large
+      image_link: content
+    third_party_settings: {  }
+hidden:
+  addtoany: true
+  body: true
+  field_location_geofield: true
+  langcode: true
+  links: true

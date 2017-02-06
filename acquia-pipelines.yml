@@ -10,15 +10,7 @@ events:
       -
         build_site:
           script:
-            - 'echo "Put your build instructions here."'
-      -
-        deploy:
-          script:
-            - 'cd environments'
-            - 'composer install'
-            - 'php cloud-ode.php'
-  merge:
-    steps:
+            - 'echo "Build complete."'
       -
         deploy:
           script:

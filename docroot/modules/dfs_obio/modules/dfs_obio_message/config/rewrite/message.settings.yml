@@ -1,0 +1,2 @@
+delete_on_entity_delete:
+  commerce_order: commerce_order

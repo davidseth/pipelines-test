@@ -1,0 +1,78 @@
+<style type="text/css">
+  body,
+  html,
+  .body {
+    background: #f3f3f3 !important;
+  }
+
+  .header {
+    background: #f2f2fa;
+  }
+
+  .body-border {
+    border-top: 5px solid #36c;
+    background: #ffffff !important;
+  }
+
+  .logo {
+    max-width: 30%;
+  }
+
+  .header-link a {
+    color: black !important;
+    text-transform: uppercase;
+  }
+
+  .button td {
+    background: transparent !important;
+    border-color: #36c;
+  }
+
+  .button a {
+    color: #36c !important;
+    font-weight: normal !important;
+  }
+</style>
+
+<container class="header">
+  <row>
+    <columns>
+      <spacer size="16"></spacer>
+
+      <center>
+        <img class="logo" src="{{ logo_url }}" />
+      </center>
+
+      <spacer size="10"></spacer>
+
+      <center>
+        <menu class="text-center">
+          {% for link in header_links %}
+            <item class="header-link" href="{{ link.url }}">{{ link.title }}</item>
+          {% endfor %}
+        </menu>
+      </center>
+
+    </columns>
+  </row>
+</container>
+
+<container class="body-border">
+  <row>
+    <columns>
+      <spacer size="16"></spacer>
+
+      <h4>Thank you for signing up for the {{ site }} newsletter!</h4>
+      <p>You'll be the first to know about new collections, products, and sales.</p>
+
+      <spacer size="16"></spacer>
+
+      <center>
+        <button href="{{ url }}">See our current offerings now.</button>
+      </center>
+
+    </columns>
+  </row>
+
+  <spacer size="16"></spacer>
+</container>

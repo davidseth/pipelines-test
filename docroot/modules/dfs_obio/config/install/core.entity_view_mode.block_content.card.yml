@@ -1,0 +1,14 @@
+uuid: 4ed9b524-c156-499e-98ed-4e213f494b0e
+langcode: en
+status: true
+dependencies:
+  module:
+    - block_content
+    - lightning_core
+third_party_settings:
+  lightning_core:
+    description: 'A compact view mode – similar to teaser.'
+id: block_content.card
+label: Card
+targetEntityType: block_content
+cache: true

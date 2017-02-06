@@ -1,0 +1,14 @@
+uuid: cd858d57-4a97-49ac-8ef4-b08075a3ea7f
+langcode: en
+status: true
+dependencies: {  }
+name: card_small
+label: 'Card small (330x181)'
+effects:
+  2e45e1c7-3ee6-47d4-8419-902c65cb9541:
+    uuid: 2e45e1c7-3ee6-47d4-8419-902c65cb9541
+    id: image_scale_and_crop
+    weight: 1
+    data:
+      width: 330
+      height: 181

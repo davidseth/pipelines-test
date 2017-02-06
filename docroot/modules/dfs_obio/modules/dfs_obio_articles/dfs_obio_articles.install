@@ -1,0 +1,22 @@
+<?php
+
+use Symfony\Component\Yaml\Yaml;
+
+/**
+ * @file
+ * Set up the Obio Articles Scenario.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dfs_obio_articles_install() {
+  // Override the Panelizer settings for articles.
+  $config = 'core.entity_view_display.node.article.default';
+  $replace = Yaml::parse(file_get_contents(dirname(__FILE__) . '/config/replace/' . $config . '.yml'));
+  $original_config = \Drupal::configFactory()->getEditable($config);
+  $data = $original_config->getRawData();
+  $data['third_party_settings'] = $replace['third_party_settings'];
+  $original_config->setData($data);
+  $original_config->save(TRUE);
+}
